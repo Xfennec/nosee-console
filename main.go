@@ -7,6 +7,7 @@ import (
 )
 
 var addr = flag.String("addr", ":8080", "http service address")
+var staticPath = flag.String("static-path", "static", "path to static Web files")
 
 func main() {
 	flag.Parse()
@@ -14,7 +15,7 @@ func main() {
 	hub := newHub()
 	go hub.run()
 
-	fs := http.FileServer(http.Dir("static"))
+	fs := http.FileServer(http.Dir(*staticPath))
 
 	http.Handle("/", fs)
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {

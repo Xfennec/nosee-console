@@ -68,8 +68,8 @@ $(document).ready(function () {
         sEnd.text("--");
       }
       root.append(dAlert);
-      $('#count').text(rings);
     });
+    $('#count').text(rings);
   }
 
   function alertsRefresh() {
