@@ -1,5 +1,7 @@
 $(document).ready(function () {
 
+  $.ajaxSetup({ cache: false });
+
   var connecter;
   var conn;
   var status = $('#status');
@@ -89,8 +91,12 @@ $(document).ready(function () {
       status.text("No connection").attr('class', 'ko');
     };
     conn.onmessage = function (evt) {
-      if (evt.data === "updated") {
-        alertsRefresh();
+      alertsRefresh();
+      console.log(evt.data);
+      switch (evt.data) {
+        case 'created':
+        case 'fixed':
+          break;
       }
     };
   }

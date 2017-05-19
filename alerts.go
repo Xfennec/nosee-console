@@ -45,7 +45,7 @@ func currentAlertsPurge(hub *Hub, expireHours int) {
 		since := time.Since(alert.GoodTime)
 		if since > time.Duration(expireHours)*time.Hour {
 			delete(currentAlerts, hash)
-			hub.Broadcast("updated")
+			hub.Broadcast("purged")
 			log.Printf("deleting old alert (%s)", alert.Subject)
 		}
 	}
@@ -179,7 +179,7 @@ func serveAlerts(hub *Hub, w http.ResponseWriter, r *http.Request) {
 					return
 				}
 				fmt.Fprintf(w, "updated\n")
-				hub.Broadcast("updated")
+				hub.Broadcast("fixed")
 				return
 			}
 			// we don't have the corresponding "BAD", let's create it
@@ -193,7 +193,7 @@ func serveAlerts(hub *Hub, w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		fmt.Fprintf(w, "created\n")
-		hub.Broadcast("updated")
+		hub.Broadcast("created")
 	default:
 		http.Error(w, "Invalid request method.", 405)
 	}
