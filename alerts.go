@@ -10,8 +10,6 @@ import (
 	"time"
 )
 
-// TODO: add a purge for old GOOD alerts
-
 // AlertGood and AlertBad maps Nosee AlertMessageType
 const (
 	AlertGood string = "GOOD"
@@ -37,15 +35,39 @@ var (
 	currentAlertsMutex sync.Mutex
 )
 
+func currentAlertsPurge(hub *Hub, expireHours int) {
+	currentAlertsMutex.Lock()
+	defer currentAlertsMutex.Unlock()
+	for hash, alert := range currentAlerts {
+		if alert.Type == AlertBad {
+			continue
+		}
+		since := time.Since(alert.GoodTime)
+		if since > time.Duration(expireHours)*time.Hour {
+			delete(currentAlerts, hash)
+			hub.Broadcast("updated")
+			log.Printf("deleting old alert (%s)", alert.Subject)
+		}
+	}
+}
+
+func currentAlertsPurger(hub *Hub, expireHours int) {
+	for {
+		currentAlertsPurge(hub, expireHours)
+		time.Sleep(30 * time.Second)
+	}
+}
+
 func currentAlertsCreate() {
 	currentAlerts = make(map[string]*Alert)
 }
 
-func currentAlertsDelete(hash string) {
-	currentAlertsMutex.Lock()
-	defer currentAlertsMutex.Unlock()
-	delete(currentAlerts, hash)
-}
+// should notify the WS…
+// func currentAlertsDelete(hash string) {
+// 	currentAlertsMutex.Lock()
+// 	defer currentAlertsMutex.Unlock()
+// 	delete(currentAlerts, hash)
+// }
 
 func currentAlertsAdd(hash string, alert *Alert) error {
 	currentAlertsMutex.Lock()
