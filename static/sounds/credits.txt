@@ -1,0 +1,9 @@
+failure sound: 
+    willy_ineedthatapp_com
+    Creative Commons 0 License
+    https://www.freesound.org/people/willy_ineedthatapp_com/sounds/167337/
+
+success sound:
+    philitup321
+    Creative Commons 0 License
+    https://www.freesound.org/people/philitup321/sounds/204369/

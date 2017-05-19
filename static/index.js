@@ -5,6 +5,7 @@ $(document).ready(function () {
   var connecter;
   var conn;
   var status = $('#status');
+  var sounds = {};
 
   function fmtDatetime(d) {
     function zero(n) {
@@ -95,11 +96,17 @@ $(document).ready(function () {
       console.log(evt.data);
       switch (evt.data) {
         case 'created':
+          sounds.failure.play();
+          break;
         case 'fixed':
+          sounds.success.play();
           break;
       }
     };
   }
+
+  sounds.failure = new Howl({ src: ['sounds/failure.mp3', 'sounds/failure.ogg'] });
+  sounds.success = new Howl({ src: ['sounds/success.mp3', 'sounds/success.ogg'] });
 
   if (window["WebSocket"]) {
     wsConnect();
