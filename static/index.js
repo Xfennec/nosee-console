@@ -37,7 +37,6 @@ $(document).ready(function () {
         alert.LastTime = new Date(alert.GoodTime);
     })
     res.sort(lastTimeDesc);
-    console.log(res);
     return res;
   }
 
@@ -80,7 +79,7 @@ $(document).ready(function () {
   }
 
   function wsConnect() {
-    console.log("wsConnect");
+    // console.log("wsConnect");
     conn = new WebSocket("ws://" + document.location.host + "/ws");
     conn.onopen = function (evt) {
       status.text("Live").attr('class', 'ok');
