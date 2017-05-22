@@ -74,6 +74,11 @@ body {
    lightgrey: #5c6370
 */
 
+#alerts .alert.general {
+
+    color: #ff3b3b;
+}
+
 /* custom classes */
 
 #alerts .alert.warning {
