@@ -1,5 +1,6 @@
 $(document).ready(function () {
 
+  // TODO: test without this since we naw have Cache-Control in the server handler
   $.ajaxSetup({ cache: false });
 
   var connecter;
@@ -51,6 +52,18 @@ $(document).ready(function () {
       var dAlert = $('<div/>').addClass('alert');
       var dDates = $('<div/>').addClass('dates').appendTo(dAlert);
       var dTitle = $('<div/>').addClass('title').appendTo(dAlert).text(this.Subject);
+      var pDetails = $('<pre/>').addClass('details').appendTo(dAlert).text(this.Details);
+      var sExtra = $('<span/>').addClass('extra');
+
+      dTitle.click(function (e) {
+        e.preventDefault();
+        pDetails.toggle('fast');
+      })
+
+      $('<span/>').text(this.NoseeSrv).appendTo(sExtra);
+      sExtra.append(' ');
+      $('<span/>').text(this.Classes.join(', ')).appendTo(sExtra);
+      dTitle.append(' ').append(sExtra);
 
       var sStart = $('<span/>').addClass('start').appendTo(dDates);
       dDates.append(' ');

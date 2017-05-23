@@ -20,6 +20,7 @@ const (
 type Alert struct {
 	Type     string
 	Subject  string
+	Details  string
 	NoseeSrv string
 	Hostname string
 	Classes  []string
@@ -121,9 +122,15 @@ func serveAlerts(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		noseeSrv := r.PostFormValue("nosee_srv")
 		uniqueid := r.PostFormValue("uniqueid")
 		datetimeStr := r.PostFormValue("datetime")
+		details := r.PostFormValue("details")
 
 		if subject == "" {
 			http.Error(w, "Invalid request: empty subject", 400)
+			return
+		}
+
+		if details == "" {
+			http.Error(w, "Invalid request: empty details", 400)
 			return
 		}
 
@@ -163,6 +170,7 @@ func serveAlerts(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		alert := Alert{
 			Type:     typeMsg,
 			Subject:  subject,
+			Details:  details,
 			NoseeSrv: noseeSrv,
 			Hostname: hostname,
 			Classes:  classes,
