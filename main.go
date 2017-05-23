@@ -18,13 +18,22 @@ func main() {
 	go currentAlertsPurger(hub, *goodExpiration)
 	go hub.run()
 
-	fs := http.FileServer(http.Dir(*staticPath))
+	// force client to validate his cache for each request (and probably get a 304)
+	setCacheControlThenServe := func(h http.Handler) http.HandlerFunc {
+		return func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Cache-Control", "max-age=0, must-revalidate")
+			h.ServeHTTP(w, r)
+		}
+	}
+
+	fs := setCacheControlThenServe(http.FileServer(http.Dir(*staticPath)))
 
 	http.Handle("/", fs)
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		serveWs(hub, w, r)
 	})
 	http.HandleFunc("/alerts", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Cache-Control", "no-store, no-cache, must-revalidate")
 		serveAlerts(hub, w, r)
 	})
 
