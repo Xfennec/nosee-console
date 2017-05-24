@@ -49,4 +49,27 @@ you don't want to use `git` for that.
 How do you use it?
 ------------------
 
-### REST-like application
+Build it, run it with no CLI option, and point your browser
+to [http://localhost:8080] and that's it. Of course, you must then send
+your alerts to this running console.
+
+### REST-like API
+
+The endpoint is `/alerts`. A `GET` will return an JSON-encoded arrays.
+
+A `POST` will allow you to send a new alert or update a previous alert to
+switch its type from BAD to GOOD.
+
+Nosee provides a [ready to use sample script](https://github.com/Xfennec/nosee/blob/master/etc/scripts/alerts/nosee-console.sh)
+where you just have to update the console URL. You may use this script as
+a reference if needed.
+
+This part of the documentation is very sparse, but the API is a Work In Progress.
+
+### Misc.
+
+Please note that there's currently no persistance implemented in the server.
+Restart the console and you'll lose all alerts. It's not a big issue for
+us currently, but we'll fix it anyway.
+
+I will soon add a supervisord script to the repository, too. (and then a systemd unit)
