@@ -50,8 +50,8 @@ How do you use it?
 ------------------
 
 Build it, run it with no CLI option, and point your browser
-to [http://localhost:8080] and that's it. Of course, you must then send
-your alerts to this running console.
+to [http://localhost:8080](http://localhost:8080) and that's it.
+Of course, you must then send your alerts to this running console, see below.
 
 ### REST-like API
 
