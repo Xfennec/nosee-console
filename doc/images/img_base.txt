@@ -1,0 +1,13 @@
++-----------+   checks…  +--------+
+| Monitored |<-----------+ Nosee  |
+|    Host   |            | Daemon |
+|           +----------->|        |
++-----------+   …detects +---+----+
+                an issue     |
+                             | rings console
+                             v
++---------+              +---------+
+|         |   displays   | Nosee   |
+| Browser |<-------------+ console |
+|         |  (WebSocket) |c1AB     |
++---------+              +---------+
