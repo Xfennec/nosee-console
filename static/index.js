@@ -1,7 +1,11 @@
-$(document).ready(function () {
+// TODO:
+// - inform users when we've lost connection? (i want to tackle the case
+//   where the Go server crashes and restarts)
+// - (possible fix for previous point) store the state on disk? (when?)
+// - "picture support" to visualize hosts (implies some sort of config system)
+// - auto-refresh on asset/config change?
 
-  // TODO: test without this since we naw have Cache-Control in the server handler
-  $.ajaxSetup({ cache: false });
+$(document).ready(function () {
 
   var connecter;
   var conn;
