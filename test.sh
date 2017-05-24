@@ -1,7 +1,6 @@
 #!/bin/bash
 
-DETAILS='
-An alert **is** ringing.
+DETAILS='An alert **is** ringing.
 
 Failure time: 20xx-xx-xx xx:37:41
 Last task time: 20xx-xx-xx xx:37:41
