@@ -17,9 +17,9 @@ $(document).ready(function () {
       return ('0' + n).slice(-2);
     }
 
-    return d.getFullYear() + "/" +
-           zero(d.getMonth()) + "/" +
-           zero(d.getDay()) + " " +
+    return d.getFullYear() + "-" +
+           zero(d.getMonth()+1) + "-" +
+           zero(d.getDate()) + " " +
            zero(d.getHours()) + ":" +
            zero(d.getMinutes());
   }
