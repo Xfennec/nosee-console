@@ -61,8 +61,8 @@ body {
 }
 
 #alerts .alert .details {
-    margin-top: 8px;
-    margin-left: 165px;
+    margin-top: 10px;
+    margin-left: 155px;
     font-size: 16px;
     display: none;
     color: #abb2bf;
@@ -71,6 +71,7 @@ body {
 #alerts .alert .details pre {
     display: inline-block;
     vertical-align: top;
+    margin: 0;
     padding: 0 10px;
 }
 
