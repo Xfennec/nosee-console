@@ -68,6 +68,21 @@ body {
     color: #abb2bf;
 }
 
+#alerts .alert .details pre {
+    display: inline-block;
+    vertical-align: top;
+    padding: 10px;
+}
+
+#alerts .alert .good-details {
+    color: #9aa990;
+}
+
+#alerts .alert .bad-details {
+    color: #a79698;
+}
+
+
 #alerts .alert .extra {
     display: inline-block;
     font-size: 13px;

@@ -56,12 +56,14 @@ $(document).ready(function () {
       var dAlert = $('<div/>').addClass('alert');
       var dDates = $('<div/>').addClass('dates').appendTo(dAlert);
       var dTitle = $('<div/>').addClass('title').appendTo(dAlert).text(this.Subject);
-      var pDetails = $('<pre/>').addClass('details').appendTo(dAlert).text(this.Details);
+      var dDetails = $('<div/>').addClass('details').appendTo(dAlert)
+      var pBadDetails = $('<pre/>').addClass('bad-details').appendTo(dDetails).text(this.BadDetails);
+      var pGoodDetails = $('<pre/>').addClass('good-details').appendTo(dDetails).text(this.GoodDetails);
       var sExtra = $('<span/>').addClass('extra');
 
       dTitle.click(function (e) {
         e.preventDefault();
-        pDetails.toggle('fast');
+        dDetails.toggle('fast');
       })
 
       $('<span/>').text(this.NoseeSrv).appendTo(sExtra);

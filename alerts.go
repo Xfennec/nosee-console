@@ -18,15 +18,16 @@ const (
 
 // Alert follows Nosee's idea of an alert message
 type Alert struct {
-	Type     string
-	Subject  string
-	Details  string
-	NoseeSrv string
-	Hostname string
-	Classes  []string
-	UniqueID string
-	BadTime  time.Time
-	GoodTime time.Time
+	Type        string
+	Subject     string
+	NoseeSrv    string
+	Hostname    string
+	Classes     []string
+	UniqueID    string
+	BadTime     time.Time
+	GoodTime    time.Time
+	BadDetails  string
+	GoodDetails string
 }
 
 // currentAlerts is a "thread-safe" map of all alerts
@@ -99,8 +100,10 @@ func currentAlertsUpdate(hash string, alert *Alert) error {
 	}
 
 	badTime := currentAlerts[hash].BadTime
+	badDetails := currentAlerts[hash].BadDetails
 	currentAlerts[hash] = alert
 	currentAlerts[hash].BadTime = badTime
+	currentAlerts[hash].BadDetails = badDetails
 	return nil
 }
 
@@ -170,7 +173,6 @@ func serveAlerts(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		alert := Alert{
 			Type:     typeMsg,
 			Subject:  subject,
-			Details:  details,
 			NoseeSrv: noseeSrv,
 			Hostname: hostname,
 			Classes:  classes,
@@ -179,6 +181,7 @@ func serveAlerts(hub *Hub, w http.ResponseWriter, r *http.Request) {
 
 		if typeMsg == "GOOD" {
 			alert.GoodTime = datetime
+			alert.GoodDetails = details
 			if currentAlertsExists(uniqueid) {
 				// will preserve previous BadTime
 				if error := currentAlertsUpdate(uniqueid, &alert); error != nil {
@@ -192,7 +195,7 @@ func serveAlerts(hub *Hub, w http.ResponseWriter, r *http.Request) {
 			}
 			// we don't have the corresponding "BAD", let's create it
 		}
-
+		alert.BadDetails = details
 		alert.BadTime = datetime
 
 		if error := currentAlertsAdd(uniqueid, &alert); error != nil {
