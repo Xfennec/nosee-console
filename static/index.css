@@ -71,7 +71,7 @@ body {
 #alerts .alert .details pre {
     display: inline-block;
     vertical-align: top;
-    padding: 10px;
+    padding: 0 10px;
 }
 
 #alerts .alert .good-details {
