@@ -70,8 +70,10 @@ body {
 #alerts .alert .details pre {
     display: inline-block;
     vertical-align: top;
+    white-space: pre-wrap;
     margin: 0;
     padding: 10px;
+    max-width: calc(50% - 20px);
 }
 
 #alerts .alert .good-details {
