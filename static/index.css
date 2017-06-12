@@ -61,7 +61,6 @@ body {
 }
 
 #alerts .alert .details {
-    margin-top: 10px;
     margin-left: 155px;
     font-size: 16px;
     display: none;
@@ -72,7 +71,7 @@ body {
     display: inline-block;
     vertical-align: top;
     margin: 0;
-    padding: 0 10px;
+    padding: 10px;
 }
 
 #alerts .alert .good-details {
