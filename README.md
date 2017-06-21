@@ -68,8 +68,8 @@ This part of the documentation is very sparse, but the API is a Work In Progress
 
 ### Misc.
 
-Please note that there's currently no persistance implemented in the server.
-Restart the console and you'll lose all alerts. It's not a big issue for
-us currently, but we'll fix it anyway.
+The server now implement persistance, you can restart the server without
+losing current alerts. See `nosee-console-alerts.json` and `-save-path` option,
+and feel free to delete the file for a fresh start with no alert.
 
 I will soon add a supervisord script to the repository, too. (and then a systemd unit)

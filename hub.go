@@ -35,11 +35,11 @@ func (h *Hub) run() {
 	for {
 		select {
 		case client := <-h.register:
-			log.Println("client registering")
+			log.Println("WebSocket: client registering")
 			h.clients[client] = true
 		case client := <-h.unregister:
 			if _, ok := h.clients[client]; ok {
-				log.Println("client unregistering")
+				log.Println("WebSocket: client unregistering")
 				delete(h.clients, client)
 				close(client.send)
 			}

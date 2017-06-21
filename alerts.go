@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 	"sync"
 	"time"
@@ -15,6 +16,8 @@ const (
 	AlertGood string = "GOOD"
 	AlertBad  string = "BAD"
 )
+
+const statusFile string = "nosee-console-alerts.json"
 
 // Alert follows Nosee's idea of an alert message
 type Alert struct {
@@ -37,6 +40,47 @@ var (
 	currentAlertsMutex sync.Mutex
 )
 
+func currentAlertsSave() {
+	// doing this in a go routine allows this function to be called
+	// by functions that are already locking the mutex
+	go func() {
+		currentAlertsMutex.Lock()
+		defer currentAlertsMutex.Unlock()
+
+		f, err := os.Create(*savePath + "/" + statusFile)
+		if err != nil {
+			log.Fatalf("can't save status, %s", err)
+		}
+		defer f.Close()
+
+		enc := json.NewEncoder(f)
+		err = enc.Encode(&currentAlerts)
+		if err != nil {
+			log.Fatalf("status json encode: %s", err)
+		}
+		log.Printf("status saved")
+	}()
+}
+
+func currentAlertsLoad() {
+	currentAlertsMutex.Lock()
+	defer currentAlertsMutex.Unlock()
+
+	f, err := os.Open(*savePath + "/" + statusFile)
+	if err != nil {
+		log.Printf("can't read previous status: %s, no alert loaded", err)
+		return
+	}
+	defer f.Close()
+
+	dec := json.NewDecoder(f)
+	err = dec.Decode(&currentAlerts)
+	if err != nil {
+		log.Fatalf("status json decode: %s", err)
+	}
+	log.Printf("status loaded: %d alert(s)", len(currentAlerts))
+}
+
 func currentAlertsPurge(hub *Hub, expireHours int) {
 	currentAlertsMutex.Lock()
 	defer currentAlertsMutex.Unlock()
@@ -47,6 +91,7 @@ func currentAlertsPurge(hub *Hub, expireHours int) {
 		since := time.Since(alert.GoodTime)
 		if since > time.Duration(expireHours)*time.Hour {
 			delete(currentAlerts, hash)
+			currentAlertsSave()
 			hub.Broadcast("purged")
 			log.Printf("deleting old alert (%s)", alert.Subject)
 		}
@@ -78,6 +123,7 @@ func currentAlertsAdd(hash string, alert *Alert) error {
 		return fmt.Errorf("hash for this alert already exists (%s)", hash)
 	}
 	currentAlerts[hash] = alert
+	currentAlertsSave()
 	return nil
 }
 
@@ -104,6 +150,7 @@ func currentAlertsUpdate(hash string, alert *Alert) error {
 	currentAlerts[hash] = alert
 	currentAlerts[hash].BadTime = badTime
 	currentAlerts[hash].BadDetails = badDetails
+	currentAlertsSave()
 	return nil
 }
 
