@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path"
 	"strings"
 	"sync"
 	"time"
@@ -47,7 +48,7 @@ func currentAlertsSave() {
 		currentAlertsMutex.Lock()
 		defer currentAlertsMutex.Unlock()
 
-		f, err := os.Create(*savePath + "/" + statusFile)
+		f, err := os.Create(path.Clean(*savePath + "/" + statusFile))
 		if err != nil {
 			log.Fatalf("can't save status, %s", err)
 		}
@@ -66,7 +67,7 @@ func currentAlertsLoad() {
 	currentAlertsMutex.Lock()
 	defer currentAlertsMutex.Unlock()
 
-	f, err := os.Open(*savePath + "/" + statusFile)
+	f, err := os.Open(path.Clean(*savePath + "/" + statusFile))
 	if err != nil {
 		log.Printf("can't read previous status: %s, no alert loaded", err)
 		return
