@@ -17,12 +17,16 @@ body {
     z-index: 10;
 }
 
-#status.ok {
+#status .ok {
     color: #98c379;
 }
 
-#status.ko {
+#status .ko {
     color: #d26670;
+}
+
+#status .ver {
+    color: grey;
 }
 
 #alerts {

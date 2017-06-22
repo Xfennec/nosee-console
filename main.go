@@ -39,6 +39,9 @@ func main() {
 		w.Header().Set("Cache-Control", "no-store, no-cache, must-revalidate")
 		serveAlerts(hub, w, r)
 	})
+	http.HandleFunc("/heartbeat", func(w http.ResponseWriter, r *http.Request) {
+		serveHeartbeat(hub, w, r)
+	})
 
 	log.Println("HTTP + WebSocket server listening:", *addr)
 	err := http.ListenAndServe(*addr, nil)

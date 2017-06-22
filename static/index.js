@@ -6,10 +6,14 @@
 // - auto-refresh on asset/config change?
 
 $(document).ready(function () {
+  var heartbeatBuildDelaySeconds = 3;
+  var heartbeatOfflineDelaySeconds = 70;
 
   var connecter;
   var conn;
-  var status = $('#status');
+  var statusConsole = $('#status-console .val');
+  var statusServers = $('#status-servers');
+  var servers = {};
   var sounds = {};
 
   function fmtDatetime(d) {
@@ -22,6 +26,28 @@ $(document).ready(function () {
            zero(d.getDate()) + " " +
            zero(d.getHours()) + ":" +
            zero(d.getMinutes());
+  }
+
+  function howago(durationSeconds) {
+    var res = parseInt(durationSeconds);
+    var secs   = res;
+    var mins   = Math.floor(res/60);
+    var hours  = Math.floor(res/60/60);
+    var days   = Math.floor(res/60/60/24);
+    var months = Math.floor(res/60/60/24/30);
+    var years  = Math.floor(res/60/60/24/30/12);
+
+    if(secs < 60)
+      return '' + secs + ' second' + (secs > 1 ? 's': '');
+    if(mins < 60)
+      return '' + mins + ' minute' + (mins > 1 ? 's': '');
+    if(hours < 48)
+      return '' + hours + ' hour' + (hours > 1 ? 's': '');
+    if(days < 40)
+      return '' + days + ' day' + (days > 1 ? 's': '');
+    if(months < 12)
+      return '' + months + ' month' + (months > 1 ? 's': '');
+    return '' + years + ' year' + (years > 1 ? 's': '');
   }
 
   function alertsEnhance(data) {
@@ -100,24 +126,77 @@ $(document).ready(function () {
     });
   }
 
+  function heartbeatBuild() {
+    statusServers.empty();
+    $.each(servers, function (i, server) {
+      var ts = Math.floor(Date.now() / 1000);
+
+      var cssClass = 'ok';
+      var txt = 'up since ' + howago(server.uptime);
+      if (ts - server.lastPing > heartbeatOfflineDelaySeconds) {
+        cssClass = 'ko';
+        txt = 'down since ' + howago(ts - server.lastPing);
+      }
+
+      $('<div/>', {
+        class: 'server',
+        text: server.name,
+      }).appendTo(statusServers)
+      .append(' ')
+      .append($('<span/>', {
+        class: 'ver',
+        text: '(' + server.version + ')',
+      }))
+      .append(': ')
+      .append($('<span/>', {
+        class: cssClass,
+        text: txt,
+      }));
+    });
+  }
+
+  function heartbeat(server, version, uptime) {
+    if (typeof servers[server] === "undefined") {
+      servers[server] = {
+        name: server,
+        uptime: uptime,
+        version: version,
+        lastPing: Math.floor(Date.now() / 1000),
+      }
+    } else {
+      servers[server].uptime = uptime;
+      servers[server].version = version;
+      servers[server].lastPing = Math.floor(Date.now() / 1000);
+    }
+  }
+
   function wsConnect() {
     // console.log("wsConnect");
     conn = new WebSocket("ws://" + document.location.host + "/ws");
     conn.onopen = function (evt) {
-      status.text("Live").attr('class', 'ok');
+      statusConsole.text("Live").removeClass('ko').addClass('ok');
       alertsRefresh();
     };
     conn.onclose = function (evt) {
-      status.text("No connection").attr('class', 'ko');
+      statusConsole.text("No connection").removeClass('ok').addClass('ko');
     };
     conn.onmessage = function (evt) {
-      alertsRefresh();
       console.log(evt.data);
-      switch (evt.data) {
+      var dataParts = evt.data.split('|')
+      switch (dataParts[0]) {
+        case 'heartbeat':
+          // dataParts[]: 1 = server, 2 = version, 3 = uptime (seconds)
+          heartbeat(dataParts[1], dataParts[2], dataParts[3]);
+          break;
+        case 'purged':
+          alertsRefresh();
+          break;
         case 'created':
+          alertsRefresh();
           sounds.failure.play();
           break;
         case 'fixed':
+          alertsRefresh();
           sounds.success.play();
           break;
       }
@@ -136,4 +215,6 @@ $(document).ready(function () {
   } else {
     status.text("no WebSocket support").attr('class', '');
   }
+
+  setInterval(heartbeatBuild, heartbeatBuildDelaySeconds * 1000);
 });
