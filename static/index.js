@@ -174,11 +174,11 @@ $(document).ready(function () {
     // console.log("wsConnect");
     conn = new WebSocket("ws://" + document.location.host + "/ws");
     conn.onopen = function (evt) {
-      statusConsole.text("Live").removeClass('ko').addClass('ok');
+      statusConsole.text("connected").removeClass('ko').addClass('ok');
       alertsRefresh();
     };
     conn.onclose = function (evt) {
-      statusConsole.text("No connection").removeClass('ok').addClass('ko');
+      statusConsole.text("no connection").removeClass('ok').addClass('ko');
     };
     conn.onmessage = function (evt) {
       console.log(evt.data);
