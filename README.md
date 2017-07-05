@@ -72,4 +72,4 @@ The server now implement persistance, you can restart the server without
 losing current alerts. See `nosee-console-alerts.json` and `-save-path` option,
 and feel free to delete the file for a fresh start with no alert.
 
-I will soon add a supervisord script to the repository, too. (and then a systemd unit)
+See deploy/ directory for a sample supervisord config file. (will add a systemd unit later)
