@@ -1,5 +1,5 @@
 [Unit]
-Description=A simple Web based alert monitoring console, mostly for Nosee.
+Description=A simple Web based alert monitoring console, mostly for Nosee
 After=network-online.target
 
 [Service]
