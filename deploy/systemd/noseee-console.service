@@ -1,0 +1,12 @@
+[Unit]
+Description=A simple Web based alert monitoring console, mostly for Nosee.
+After=network-online.target
+
+[Service]
+User={USER}
+ExecStart=/home/{USER}/go/bin/nosee-console -static-path /home/{USER}/go/src/github.com/Xfennec/nosee-console/static/ -save-path=/home/{USER}/nosee
+Type=simple
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
