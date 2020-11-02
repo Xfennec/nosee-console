@@ -53,6 +53,13 @@ $(document).ready(function () {
   function alertsEnhance(data) {
 
     function lastTimeDesc(a,b) {
+      // first, errors…
+      if (a.Type === "BAD" && b.Type === "GOOD")
+        return -1;
+      if (a.Type === "GOOD" && b.Type === "BAD")
+        return 1;
+
+      //  …then, sort by time (desc)
       if (a.LastTime < b.LastTime)
         return 1;
       if (a.LastTime > b.LastTime)
